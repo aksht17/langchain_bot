@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "TalentLens | Candidate Search",
-  description: "Search and compare the strongest candidates in your resume database.",
+  title: "TalentLens | Talent Atlas",
+  description: "An editorial workspace for discovering the strongest evidence in your resume index.",
 };
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full">
-      <body className="h-full antialiased overflow-hidden flex flex-col">
+      <body className="min-h-full antialiased">
         {children}
       </body>
     </html>

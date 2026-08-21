@@ -1,44 +1,50 @@
 "use client";
 
-import React, { useState } from "react";
-import { ColdStartBanner } from "@/components/ColdStartBanner";
+import { useState } from "react";
+import { Activity, Compass, Sparkles } from "lucide-react";
 import { ChatInterface } from "@/components/ChatInterface";
-import { Sparkles, Wifi } from "lucide-react";
+import { ColdStartBanner } from "@/components/ColdStartBanner";
 
 export default function Home() {
   const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
-  const [isBackendHealthy, setIsBackendHealthy] = useState(true);
+  const [isBackendHealthy, setIsBackendHealthy] = useState<boolean | null>(null);
+
+  const statusLabel = isBackendHealthy === null ? "Checking search index" : isBackendHealthy ? "Search index ready" : "Warming up search index";
 
   return (
-    <main className="app-shell flex flex-col h-screen w-full text-slate-900">
-      <ColdStartBanner
-        backendUrl={backendUrl}
-        onStatusChange={(healthy) => setIsBackendHealthy(healthy)}
-      />
-
-      <header className="px-5 py-4 border-b border-white/70 bg-white/35 backdrop-blur-2xl z-10 shadow-[0_1px_0_rgba(255,255,255,0.8)]">
-        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="brand-mark w-10 h-10 rounded-2xl bg-slate-900/90 text-white flex items-center justify-center shadow-[0_8px_18px_rgba(15,23,42,0.16)]">
-              <Sparkles className="w-5 h-5" />
+    <main className="app-shell min-h-screen w-full text-[#28241f]">
+      <header className="atlas-header">
+        <div className="atlas-header-inner">
+          <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+            <div className="brand-emblem" aria-hidden="true">
+              <Compass className="h-[18px] w-[18px]" />
+              <span className="brand-emblem-spark"><Sparkles className="h-2.5 w-2.5" /></span>
             </div>
-
-            <div>
-              <h1 className="font-semibold text-lg tracking-tight text-slate-900">TalentLens</h1>
-              <p className="text-[11px] text-slate-500">Find the right people, faster</p>
+            <div className="min-w-0">
+              <div className="flex items-baseline gap-2">
+                <p className="brand-wordmark">TalentLens</p>
+                <span className="hidden text-[10px] font-semibold uppercase tracking-[0.16em] text-[#9a9187] sm:inline">Talent atlas</span>
+              </div>
+              <p className="mt-0.5 hidden text-[11px] text-[#746c62] sm:block">Evidence-led candidate discovery</p>
             </div>
           </div>
 
-          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/45 border border-white/80 text-xs shadow-sm ${isBackendHealthy ? "text-emerald-700" : "text-amber-700"}`}>
-            <Wifi className="w-3.5 h-3.5" />
-            <span>{isBackendHealthy ? "Ready to search" : "Waking up"}</span>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <span className="hidden rounded-full border border-[#e6e0d7] bg-[#fffdfa]/75 px-3 py-1.5 text-[11px] font-medium text-[#71695f] md:inline-flex">
+              Resume intelligence, distilled
+            </span>
+            <span className={`connection-pill ${isBackendHealthy === false ? "connection-pill-warming" : ""}`} aria-live="polite">
+              <span className="connection-dot" />
+              <Activity className="h-3 w-3" />
+              <span className="hidden sm:inline">{statusLabel}</span>
+              <span className="sm:hidden">{isBackendHealthy === false ? "Warming" : "Ready"}</span>
+            </span>
           </div>
         </div>
       </header>
 
-      <div className="flex-1 flex overflow-hidden">
-        <ChatInterface backendUrl={backendUrl} />
-      </div>
+      <ColdStartBanner backendUrl={backendUrl} onStatusChange={setIsBackendHealthy} />
+      <ChatInterface backendUrl={backendUrl} />
     </main>
   );
 }
