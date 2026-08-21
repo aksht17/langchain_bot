@@ -1,0 +1,26 @@
+__pycache__/
+*.pyc
+.venv/
+.venv-1/
+.env
+.env.*
+!.env.example
+
+# Node / frontend
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+
+Resume Dashboard - Placement 2025-26 Phase 1.csv
+Plan_of_Action_Agentic_Resume_RAG_Antigravity.pdf
+
+# Logs
+*.log
+
+# Local/generated data
+data/raw_resumes/
+data/parsed_chunks.json
+data/ingestion_manifest.json
+vectorstore/
+.DS_Store
