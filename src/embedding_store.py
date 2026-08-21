@@ -86,7 +86,7 @@ def embed_batch_with_retry(texts: List[str], dimension: Optional[int] = None) ->
     except Exception as e:
         err_msg = str(e)
         if "429" in err_msg or "RESOURCE_EXHAUSTED" in err_msg:
-            print("  [Rate-limit warning] Gemini 429 hit. Sleeping 15s before backoff retry...")
+            print("  [Rate-limit warning] Gemini 429 hit. Sleeping 30s before backoff retry...")
             time.sleep(15)
         raise e
 

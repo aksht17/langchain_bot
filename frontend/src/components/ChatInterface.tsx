@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Send, Bot, User, Sparkles, RefreshCw, Cpu, Database, Award, ArrowRight } from "lucide-react";
+import { Send, Bot, User, Sparkles, RefreshCw, Award } from "lucide-react";
 import { CandidateCard, CandidateCardData } from "./CandidateCard";
 
 interface Message {
@@ -20,10 +20,10 @@ interface ChatInterfaceProps {
 }
 
 const SAMPLE_PROMPTS = [
-  "🚀 Find top candidates with Machine Learning and rigorous Mathematics",
-  "💻 Backend engineers experienced in Kotlin, Spring Boot, or Go",
-  "📊 Candidates with Bayesian statistics, Poisson regression, or MCMC",
-  "🎯 Compare top 3 candidates by project achievements and coursework",
+  "Find top candidates with Machine Learning and Mathematics",
+  "Backend engineers with Kubernetes or Spring Boot",
+  "Candidates with Bayesian statistics or MCMC",
+  "Compare the strongest 3 applicants by project impact",
 ];
 
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({ backendUrl }) => {
@@ -31,11 +31,9 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ backendUrl }) => {
     {
       id: "welcome-msg",
       sender: "assistant",
-      text: `### 👋 Welcome to Antigravity Agentic Resume Copilot!
+      text: `### Welcome to Antigravity Resume Copilot
 
-I am an autonomous recruitment assistant powered by a **5-Node LangGraph self-correcting agent**, **Google Gemini embeddings**, **Pinecone vector retrieval**, and **LangSmith real-time observability**.
-
-Ask me any natural language recruiter query to discover, rank, and compare candidate profiles across 2,000+ placement records.`,
+I help you search, rank, and compare candidate resumes using a simple recruiter workflow. Ask for skills, roles, experience, or project strength and I’ll surface the best matches.`,
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     },
   ]);
@@ -68,20 +66,11 @@ Ask me any natural language recruiter query to discover, rank, and compare candi
     setMessages((prev) => [...prev, userMessage]);
     setInputQuery("");
     setIsLoading(true);
-    setActiveStep("Extracting entities & routing (Groq)...");
+    setActiveStep("Extracting requirements...");
 
-    // Dynamic step animation for recruiter feedback
-    const stepTimer1 = setTimeout(() => {
-      setActiveStep("Querying Pinecone Vector Index (Gemini embeddings)...");
-    }, 1200);
-
-    const stepTimer2 = setTimeout(() => {
-      setActiveStep("Grading document relevance & checking match quality...");
-    }, 2800);
-
-    const stepTimer3 = setTimeout(() => {
-      setActiveStep("Synthesizing candidate ratings & comparative matrix...");
-    }, 4500);
+    const stepTimer1 = setTimeout(() => setActiveStep("Searching candidate profiles..."), 1200);
+    const stepTimer2 = setTimeout(() => setActiveStep("Checking relevance and fit..."), 2800);
+    const stepTimer3 = setTimeout(() => setActiveStep("Preparing recommendation summary..."), 4500);
 
     try {
       const response = await fetch(`${backendUrl}/api/chat`, {
@@ -118,7 +107,7 @@ Ask me any natural language recruiter query to discover, rank, and compare candi
       const errorMessage: Message = {
         id: `err-${Date.now()}`,
         sender: "assistant",
-        text: `⚠️ **Error communicating with agent backend**: ${err.message}. If the backend is running on Render, please allow up to 40 seconds for the free instance to spin up.`,
+        text: `⚠️ The backend is unavailable right now. Please check the Render service and allow a few seconds for the instance to wake up.`,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -129,50 +118,43 @@ Ask me any natural language recruiter query to discover, rank, and compare candi
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-125px)] max-w-7xl mx-auto w-full px-4 py-4">
-      {/* Messages Scroll Area */}
-      <div className="flex-1 overflow-y-auto pr-2 space-y-6">
+    <div className="flex flex-col h-[calc(100vh-122px)] max-w-6xl mx-auto w-full px-4 py-4">
+      <div className="flex-1 overflow-y-auto pr-2 space-y-5">
         {messages.map((msg) => (
           <div
             key={msg.id}
-            className={`flex gap-3.5 ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
+            className={`flex gap-3 ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
           >
-            {/* Bot Avatar */}
             {msg.sender === "assistant" && (
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center shrink-0 shadow-md">
-                <Bot className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 rounded-2xl bg-slate-900/90 text-white flex items-center justify-center shrink-0 shadow-[0_6px_14px_rgba(15,23,42,0.14)]">
+                <Bot className="w-4 h-4" />
               </div>
             )}
 
             <div
-              className={`max-w-3xl rounded-2xl p-4.5 text-sm ${
+              className={`max-w-3xl rounded-2xl p-4 text-sm ${
                 msg.sender === "user"
-                  ? "bg-indigo-600 text-white rounded-tr-none shadow-lg shadow-indigo-600/20"
-                  : "glass-panel rounded-tl-none text-gray-200 border border-white/10"
+                  ? "bg-blue-500/90 text-white rounded-tr-md shadow-[0_8px_18px_rgba(0,122,255,0.18)]"
+                  : "glass-panel text-slate-700 rounded-tl-md"
               }`}
             >
-              {/* Message Header info for Bot */}
               {msg.sender === "assistant" && msg.rewrites !== undefined && msg.rewrites > 0 && (
-                <div className="mb-2 text-xs text-purple-400 bg-purple-950/40 px-2 py-1 rounded inline-flex items-center gap-1.5 border border-purple-500/20">
+                <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-slate-100 border border-slate-200 text-[10px] font-medium text-slate-600 px-2 py-1">
                   <RefreshCw className="w-3 h-3 animate-spin" />
-                  <span>Self-Correcting Loop: Query rewritten {msg.rewrites} time(s) for higher recall</span>
+                  Refined search: {msg.rewrites}
                 </div>
               )}
 
-              {/* Markdown Body */}
               <div className="prose-custom">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {msg.text}
-                </ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.text}</ReactMarkdown>
               </div>
 
-              {/* Candidate Cards Grid if present */}
               {msg.candidateCards && msg.candidateCards.length > 0 && (
-                <div className="mt-5 pt-4 border-t border-white/10">
+                <div className="mt-5 pt-4 border-t border-white/70">
                   <div className="flex items-center gap-2 mb-3">
-                    <Award className="w-4 h-4 text-indigo-400" />
-                    <h5 className="font-semibold text-xs text-indigo-300 uppercase tracking-wider">
-                      Matched Candidate Cards ({msg.candidateCards.length})
+                    <Award className="w-4 h-4 text-blue-600" />
+                    <h5 className="font-semibold text-[11px] uppercase tracking-[0.12em] text-slate-600">
+                      Matches ({msg.candidateCards.length})
                     </h5>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -183,32 +165,30 @@ Ask me any natural language recruiter query to discover, rank, and compare candi
                 </div>
               )}
 
-              <div className={`mt-2 text-[10px] ${msg.sender === "user" ? "text-indigo-200" : "text-gray-500"} text-right`}>
+              <div className={`mt-2 text-[10px] ${msg.sender === "user" ? "text-blue-100" : "text-slate-400"} text-right`}>
                 {msg.timestamp}
               </div>
             </div>
 
-            {/* User Avatar */}
             {msg.sender === "user" && (
-              <div className="w-8 h-8 rounded-xl bg-gray-700 flex items-center justify-center shrink-0">
-                <User className="w-4 h-4 text-gray-300" />
+              <div className="w-8 h-8 rounded-lg bg-slate-200 text-slate-700 flex items-center justify-center shrink-0">
+                <User className="w-4 h-4" />
               </div>
             )}
           </div>
         ))}
 
-        {/* Loading / Agent Node Indicator */}
         {isLoading && (
-          <div className="flex gap-3.5 items-start">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center shrink-0 animate-pulse">
-              <Sparkles className="w-4 h-4 text-white" />
+          <div className="flex gap-3 items-start">
+            <div className="w-8 h-8 rounded-2xl bg-slate-900/90 text-white flex items-center justify-center shrink-0 animate-pulse">
+              <Sparkles className="w-4 h-4" />
             </div>
-            <div className="glass-panel rounded-2xl rounded-tl-none p-4 text-xs text-indigo-300 flex items-center gap-3 border border-indigo-500/30">
-              <RefreshCw className="w-4 h-4 animate-spin text-indigo-400" />
-              <div>
-                <p className="font-semibold text-gray-200">LangGraph Agent Reasoning...</p>
-                <p className="text-indigo-300/80 mt-0.5">{activeStep || "Processing..."}</p>
+            <div className="glass-panel rounded-2xl rounded-tl-md p-4 text-xs text-slate-600">
+              <div className="flex items-center gap-2.5">
+                <RefreshCw className="w-4 h-4 animate-spin text-blue-600" />
+                <span className="font-medium text-slate-700">Searching resumes...</span>
               </div>
+              <p className="mt-1 text-slate-500">{activeStep || "Processing..."}</p>
             </div>
           </div>
         )}
@@ -216,24 +196,22 @@ Ask me any natural language recruiter query to discover, rank, and compare candi
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Suggested Quick Filters */}
       <div className="pt-3 pb-2 flex items-center gap-2 overflow-x-auto no-scrollbar">
-        <span className="text-xs text-gray-400 font-medium whitespace-nowrap flex items-center gap-1">
-          <Sparkles className="w-3 h-3 text-indigo-400" /> Quick Queries:
+        <span className="text-[11px] text-slate-500 font-medium whitespace-nowrap flex items-center gap-1">
+          <Sparkles className="w-3 h-3 text-blue-600" /> Quick queries:
         </span>
         {SAMPLE_PROMPTS.map((prompt, idx) => (
           <button
             key={idx}
             onClick={() => handleSendMessage(prompt)}
             disabled={isLoading}
-            className="text-xs whitespace-nowrap px-3 py-1.5 rounded-full glass-card hover:border-indigo-400 text-gray-300 hover:text-white transition cursor-pointer disabled:opacity-50"
+            className="text-[11px] whitespace-nowrap px-3 py-1.5 rounded-full border border-white/80 bg-white/45 text-slate-600 hover:border-blue-300 hover:text-blue-700 transition shadow-sm disabled:opacity-50"
           >
             {prompt}
           </button>
         ))}
       </div>
 
-      {/* Input Bar */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -245,17 +223,16 @@ Ask me any natural language recruiter query to discover, rank, and compare candi
           type="text"
           value={inputQuery}
           onChange={(e) => setInputQuery(e.target.value)}
-          placeholder="E.g., Find backend engineers with Go and Kubernetes, or compare top ML candidates..."
+          placeholder="Ask about skills, experience, projects, or candidate fit..."
           disabled={isLoading}
-          className="flex-1 bg-slate-900/90 border border-white/15 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-xl px-4 py-3.5 text-sm text-gray-100 placeholder-gray-500 outline-none transition backdrop-blur-md shadow-inner"
+          className="flex-1 bg-white/55 backdrop-blur-xl border border-white/85 focus:border-blue-400/60 focus:ring-2 focus:ring-blue-200/60 rounded-2xl px-4 py-3.5 text-sm text-slate-700 placeholder-slate-400 outline-none transition shadow-[0_8px_20px_rgba(15,23,42,0.06),inset_0_1px_rgba(255,255,255,0.85)]"
         />
         <button
           type="submit"
           disabled={isLoading || !inputQuery.trim()}
-          className="px-5 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl font-medium text-sm transition flex items-center gap-1.5 shadow-md shadow-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          className="px-5 py-3.5 bg-slate-900/90 text-white rounded-2xl font-medium text-sm transition shadow-[0_8px_18px_rgba(15,23,42,0.16)] hover:bg-slate-900 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <span>Send</span>
-          <Send className="w-4 h-4" />
+          Send
         </button>
       </form>
     </div>
