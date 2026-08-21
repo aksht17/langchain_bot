@@ -123,7 +123,7 @@ I help you search, rank, and compare candidate resumes using a simple recruiter 
         {messages.map((msg) => (
           <div
             key={msg.id}
-            className={`flex gap-3 ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
+            className={`message-enter flex gap-3 ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
           >
             {msg.sender === "assistant" && (
               <div className="w-8 h-8 rounded-2xl bg-slate-900/90 text-white flex items-center justify-center shrink-0 shadow-[0_6px_14px_rgba(15,23,42,0.14)]">

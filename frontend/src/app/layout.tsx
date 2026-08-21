@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Antigravity | Agentic Resume RAG Copilot",
-  description: "Autonomous Candidate Discovery & Comparative Evaluation Engine over 2,000+ Profiles using LangGraph and Pinecone Serverless.",
+  title: "TalentLens | Candidate Search",
+  description: "Search and compare the strongest candidates in your resume database.",
 };
 
 export default function RootLayout({
@@ -12,8 +12,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark h-full">
-      <body className="h-full bg-[#090d16] text-gray-100 antialiased overflow-hidden flex flex-col">
+    <html lang="en" className="h-full">
+      <body className="h-full antialiased overflow-hidden flex flex-col">
         {children}
       </body>
     </html>

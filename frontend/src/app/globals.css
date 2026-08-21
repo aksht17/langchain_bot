@@ -29,6 +29,70 @@ body {
   overflow-x: hidden;
 }
 
+.app-shell {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.app-shell::before,
+.app-shell::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 34rem;
+  height: 34rem;
+  border-radius: 999px;
+  filter: blur(70px);
+  opacity: 0.32;
+  pointer-events: none;
+  animation: drift 16s ease-in-out infinite alternate;
+}
+
+.app-shell::before {
+  top: -18rem;
+  left: 12%;
+  background: rgba(0, 122, 255, 0.22);
+}
+
+.app-shell::after {
+  right: -16rem;
+  bottom: -18rem;
+  background: rgba(168, 85, 247, 0.16);
+  animation-delay: -6s;
+}
+
+.brand-mark {
+  animation: brand-float 4s ease-in-out infinite;
+}
+
+@keyframes drift {
+  from { transform: translate3d(-3%, -2%, 0) scale(0.96); }
+  to { transform: translate3d(5%, 4%, 0) scale(1.08); }
+}
+
+@keyframes brand-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-3px) rotate(4deg); }
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.message-enter {
+  animation: rise-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 .glass-panel {
   background: rgba(255, 255, 255, 0.58);
   backdrop-filter: blur(24px) saturate(150%);
