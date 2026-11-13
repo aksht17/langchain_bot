@@ -37,7 +37,7 @@ export default function Home() {
               <span className="connection-dot" />
               <Activity className="h-3 w-3" />
               <span className="hidden sm:inline">{statusLabel}</span>
-              <span className="sm:hidden">{isBackendHealthy === false ? "Warming" : "Ready"}</span>
+              <span className="sm:hidden">{isBackendHealthy === null ? "Checking" : isBackendHealthy ? "Ready" : "Warming"}</span>
             </span>
           </div>
         </div>

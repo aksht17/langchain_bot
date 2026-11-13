@@ -24,3 +24,6 @@ data/parsed_chunks.json
 data/ingestion_manifest.json
 vectorstore/
 .DS_Store
+resume_bullet_points.md
+story_resume_bullet_points.md
+resume rag resume points.png

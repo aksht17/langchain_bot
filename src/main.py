@@ -21,7 +21,7 @@ from ingest_resumes import run_ingestion_pipeline
 from embedding_store import index_parsed_chunks
 
 app = FastAPI(
-    title="Antigravity Agentic Resume RAG API",
+    title="Agentic Resume RAG ",
     description="Multi-agent recruitment copilot and candidate discovery engine powered by LangGraph, Pinecone, Gemini, and Groq.",
     version="1.0.0"
 )
